@@ -258,12 +258,15 @@ def main(cfg: DictConfig):
         cfg.data.module_parameters.batch_size * world_size
     ) * cfg.trainer.grad_acc_steps
     if rank == 0 and cfg.logger.wandb:
-        wandb.init(
-            project=cfg.logger.wandb_project_name,
-            group=f"{cfg.data.wandb_data_name}",
-            config=config_for_wandb,
-            name=experiment_name,
-        )
+        wandb_kwargs = {
+            "project": cfg.logger.wandb_project_name,
+            "group": f"{cfg.data.wandb_data_name}",
+            "config": config_for_wandb,
+            "name": experiment_name,
+        }
+        if hasattr(cfg.logger, "wandb_entity") and cfg.logger.wandb_entity:
+            wandb_kwargs["entity"] = cfg.logger.wandb_entity
+        wandb.init(**wandb_kwargs)
     train(
         cfg,
         experiment_name,
