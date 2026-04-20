@@ -4,7 +4,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=2
 #SBATCH --gres=gpu:2
-#SBATCH --time=24:00:00
+#SBATCH --time=23:00:00
 #SBATCH --output=logs/%x-%j.out
 #SBATCH --error=logs/%x-%j.err
 
