@@ -1,0 +1,42 @@
+python controllable_patching_striding/train.py \
+server=local distribution=local \
+data=TRL_2D \
+data.well_base_path=./datasets \
+trainer.max_epoch=1 \
+data.module_parameters.max_samples=20 \
+logger.wandb=False
+
+
+python controllable_patching_striding/train.py \
+server=local distribution=local \
+data=TRL_2D_small \
+model=isotropic_model_small \
+data.well_base_path=./datasets \
+trainer.max_epoch=1 \
+logger.wandb=False
+
+
+python controllable_patching_striding/train.py \
+server=local distribution=local \
+data=TRL_2D_small \
+model=isotropic_model_small \
+data.well_base_path=./datasets \
+trainer.max_epoch=1 \
+logger.wandb=False \
+auto_resume=False
+
+
+
+python controllable_patching_striding/train.py \
+server=local distribution=local \
+data=TRL_2D_small \
+model=isotropic_model_small \
+data.well_base_path=./datasets \
+trainer.max_epoch=100 \
+trainer.video_validation=False \
+trainer.image_validation=False \
+data.module_parameters.max_samples=2000 \
+auto_resume=False \
+logger=wandb \
+logger.wandb_project_name=patch-modulator-training \
+logger.wandb_entity=MeshTusk
