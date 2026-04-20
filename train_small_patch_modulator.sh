@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=meshtusk_train
 #SBATCH --partition=ampere
-#SBATCH --nodes=2
+#SBATCH --nodes=1
 #SBATCH --ntasks=14
 #SBATCH --gres=gpu:4
 #SBATCH --time=12:00:00
