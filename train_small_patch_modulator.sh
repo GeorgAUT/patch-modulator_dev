@@ -17,7 +17,7 @@ echo "Working directory: $(pwd)"
 source /cephfs/store/damtp/gam37/venv-patch-modulator/bin/activate
 
 # Move to project directory
-cd /cephfs/store/damtp/gam37/MeshTusk
+cd /cephfs/store/damtp/gam37/path-modulator_dev
 
 # Run training script
 python controllable_patching_striding/train.py \
