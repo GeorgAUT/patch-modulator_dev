@@ -3,10 +3,10 @@ defaults:
   - decoder: vstride_decoder
   - processor: space_time_split_small
 _target_: controllable_patching_striding.models.IsotropicModel
-hidden_dim: 16
+hidden_dim: 192
 processor_blocks: 4
 drop_path: .05
-groups: 4
+groups: 12
 max_d: 3
 static_axes: True
 weight_tied_axes: False

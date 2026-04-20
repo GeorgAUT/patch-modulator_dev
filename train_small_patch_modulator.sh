@@ -4,7 +4,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=2
 #SBATCH --gres=gpu:2
-#SBATCH --time=12:00:00
+#SBATCH --time=24:00:00
 #SBATCH --output=logs/%x-%j.out
 #SBATCH --error=logs/%x-%j.err
 
@@ -22,10 +22,10 @@ cd /cephfs/store/damtp/gam37/patch-modulator_dev
 # Run training script
 python controllable_patching_striding/train.py \
 server=local distribution=local \
-data=TRL_2D_small \
+data=TRL_2D \
 model=isotropic_model_small \
 data.well_base_path=./datasets \
-trainer.max_epoch=100 \
+trainer.max_epoch=300 \
 trainer.video_validation=False \
 trainer.image_validation=False \
 data.module_parameters.max_samples=2000 \
