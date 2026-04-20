@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=meshtusk_train
 #SBATCH --partition=ampere
-#SBATCH --nodes=1
-#SBATCH --ntasks=2
-#SBATCH --gres=gpu:2
-#SBATCH --time=13:00:00
+#SBATCH --nodes=2
+#SBATCH --ntasks=14
+#SBATCH --gres=gpu:4
+#SBATCH --time=12:00:00
 #SBATCH --output=logs/%x-%j.out
 #SBATCH --error=logs/%x-%j.err
 
