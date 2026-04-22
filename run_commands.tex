@@ -40,3 +40,8 @@ auto_resume=False \
 logger=wandb \
 logger.wandb_project_name=patch-modulator-training \
 logger.wandb_entity=MeshTusk
+
+
+python make_rollout_video.py \
+  --checkpoint_dir ./checkpoints \
+  --well_base_path ./datasets

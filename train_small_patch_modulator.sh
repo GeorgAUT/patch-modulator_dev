@@ -4,7 +4,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
-#SBATCH --time=3:00:00
+#SBATCH --time=10:00:00
 #SBATCH --output=logs/%x-%j.out
 #SBATCH --error=logs/%x-%j.err
 
@@ -25,10 +25,10 @@ server=local distribution=local \
 data=TRL_2D \
 model=isotropic_model_small \
 data.well_base_path=./datasets \
-trainer.max_epoch=20 \
+trainer.max_epoch=200 \
 trainer.video_validation=False \
 trainer.image_validation=False \
-data.module_parameters.max_samples=20 \
+data.module_parameters.max_samples=200 \
 auto_resume=False \
 logger=wandb \
 logger.wandb_project_name=patch-modulator-training \
