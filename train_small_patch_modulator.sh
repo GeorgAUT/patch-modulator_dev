@@ -2,7 +2,7 @@
 #SBATCH --job-name=meshtusk_train
 #SBATCH --partition=ampere
 #SBATCH --nodes=1
-#SBATCH --ntasks=
+#SBATCH --ntasks=2
 #SBATCH --gres=gpu:1
 #SBATCH --time=12:00:00
 #SBATCH --output=logs/%x-%j.out
