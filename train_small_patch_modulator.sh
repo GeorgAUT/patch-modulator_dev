@@ -25,10 +25,10 @@ server=local distribution=local \
 data=TRL_2D \
 model=isotropic_model_small \
 data.well_base_path=./datasets \
-trainer.max_epoch=30 \
+trainer.max_epoch=2 \
 trainer.video_validation=False \
 trainer.image_validation=False \
-data.module_parameters.max_samples=2000 \
+data.module_parameters.max_samples=200 \
 auto_resume=False \
 logger=wandb \
 logger.wandb_project_name=patch-modulator-training \
