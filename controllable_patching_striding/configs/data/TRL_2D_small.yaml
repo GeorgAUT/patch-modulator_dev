@@ -2,10 +2,10 @@ well_base_path: /mnt/gpuxl/polymathic/the_well/datasets/ # Usually overrided by 
 wandb_data_name: "well_2d_only"
 module_parameters:
   _target_: data.MixedWellDataModule
-  batch_size: 1
-  n_steps_input: 2
+  batch_size: 2
+  n_steps_input: 6
   n_steps_output: 1
-  max_samples: 2000 # Time in fake epochs
+  max_samples: 100 # Time in fake epochs
   well_dataset_info: 
     turbulent_radiative_layer_2D:
       include_filters: []

@@ -4,8 +4,8 @@ learned_pad: true
 base_kernel_size1d:
   - [4, 4]
 base_kernel_size2d: 
-  - [8, 4]
-  - [8, 4]
+  - [4, 4]
+  - [4, 4]
 base_kernel_size3d: 
   - [4, 4]
   - [4, 4]

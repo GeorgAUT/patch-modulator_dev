@@ -10,6 +10,6 @@ defaults:
   - distribution: local
   - logger: wandb
   - checkpoint: defaults
-data_workers: 14
+data_workers: 4
 name: default_name
 automatic_setup: True
