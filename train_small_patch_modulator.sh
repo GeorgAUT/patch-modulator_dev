@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=meshtusk_train
-#SBATCH --partition=lovelace
+#SBATCH --partition=ampere
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
@@ -25,7 +25,7 @@ server=local distribution=local \
 data=TRL_2D \
 model=isotropic_model_small \
 data.well_base_path=./datasets \
-trainer.max_epoch=2 \
+trainer.max_epoch=20 \
 trainer.video_validation=False \
 trainer.image_validation=False \
 data.module_parameters.max_samples=200 \
