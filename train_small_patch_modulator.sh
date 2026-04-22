@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=meshtusk_train
-#SBATCH --partition=ampere
+#SBATCH --partition=lovelace
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
