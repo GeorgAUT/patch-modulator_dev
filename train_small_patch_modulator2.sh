@@ -24,7 +24,7 @@ python controllable_patching_striding/train.py \
 server=local distribution=local \
 data=TRL_2D \
 data.well_base_path=./datasets \
-trainer.max_epoch=2 \
+trainer.max_epoch=201 \
 trainer.max_rollout_steps=10 \
 trainer.prediction_type=delta \
 trainer.video_validation=False \
