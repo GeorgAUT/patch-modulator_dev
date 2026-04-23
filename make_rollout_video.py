@@ -151,6 +151,8 @@ def main() -> None:
         dcp.load(state_dict=state_dict, checkpoint_id=args.checkpoint_dir)
     wandb_logging = False
 
+    cfg.trainer.max_epoch = start_epoch # Trainer isn't actually used this is just to recover model from checkpoint
+
     trainer: Trainer = instantiate(
         cfg.trainer,
         experiment_name=osp.basename(args.output_dir),
