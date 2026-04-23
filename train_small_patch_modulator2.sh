@@ -2,8 +2,8 @@
 #SBATCH --job-name=meshtusk_train
 #SBATCH --partition=ampere
 #SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --gres=gpu:1
+#SBATCH --ntasks=2
+#SBATCH --gres=gpu:2
 #SBATCH --time=10:00:00
 #SBATCH --output=logs/%x-%j.out
 #SBATCH --error=logs/%x-%j.err
@@ -24,7 +24,7 @@ python controllable_patching_striding/train.py \
 server=local distribution=local \
 data=TRL_2D \
 data.well_base_path=./datasets \
-trainer.max_epoch=201 \
+trainer.max_epoch=121 \
 trainer.max_rollout_steps=10 \
 trainer.prediction_type=delta \
 trainer.video_validation=False \
