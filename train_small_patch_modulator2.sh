@@ -21,7 +21,7 @@ cd /cephfs/store/damtp/gam37/patch-modulator_dev
 
 # Run training script
 python controllable_patching_striding/train.py \
-distribution=fsdp server=rusty \
+server=local distribution=local \
 data=TRL_2D \
 data.well_base_path=./datasets \
 trainer.max_epoch=2 \
