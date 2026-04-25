@@ -2,12 +2,13 @@ import functools
 import logging
 import os
 import os.path as osp
-import sys
 from typing import Dict, Optional, cast
 
 import hydra
 import torch
 import wandb
+from hydra import compose, initialize_config_dir
+from hydra.core.global_hydra import GlobalHydra
 from hydra.utils import instantiate
 from omegaconf import DictConfig, OmegaConf
 from torchinfo import summary
@@ -44,15 +45,15 @@ logger.info(f"Run training script for {CONFIG_PATH}")
 
 
 def train(
-    cfg: DictConfig,
-    experiment_name: str,
-    experiment_folder: str,
-    viz_folder: str,
-    is_distributed: bool = False,
-    world_size: int = 1,
-    rank: int = 0,
-    local_rank: int = 0,
-    mesh: Optional[torch.distributed.device_mesh.DeviceMesh] = None,
+        cfg: DictConfig,
+        experiment_name: str,
+        experiment_folder: str,
+        viz_folder: str,
+        is_distributed: bool = False,
+        world_size: int = 1,
+        rank: int = 0,
+        local_rank: int = 0,
+        mesh: Optional[torch.distributed.device_mesh.DeviceMesh] = None,
 ):
     """Instantiate the different objects required for training and run the training loop."""
 
@@ -133,7 +134,7 @@ def train(
     val_loss = torch.tensor(float("inf"))
     logger.info(f"Instantiate checkpointer {cfg.checkpoint._target_}")
     checkpointer: BaseCheckPointer = instantiate(cfg.checkpoint)
-    
+
     # ------------------------------------------------------------------------------
     # Checkpoint loading
     #
@@ -155,7 +156,7 @@ def train(
     # Set `custom_checkpoint_path` below to the one you want to load.
     # ------------------------------------------------------------------------------
     # TODO: MOVE THIS TO A CONFIG FILE.
-    custom_checkpoint_path = ""   
+    custom_checkpoint_path = ""
 
     if os.path.exists(custom_checkpoint_path):
         logger.info(f"Resuming from checkpoint: {custom_checkpoint_path}")
@@ -194,7 +195,7 @@ def train(
     if rank == 0:
         logger.info(f"Final configuration:\n{OmegaConf.to_yaml(cfg)}")
     logger.info(f"Instantiate trainer {cfg.trainer._target_}")
-    #val1 = model.state_dict()['space_bag.linear.weight']
+    # val1 = model.state_dict()['space_bag.linear.weight']
     trainer: Trainer = instantiate(
         cfg.trainer,
         experiment_name=experiment_name,
@@ -226,6 +227,10 @@ def train(
 
 @hydra.main(version_base=None, config_path=CONFIG_DIR, config_name=CONFIG_NAME)
 def main(cfg: DictConfig):
+    _run(cfg)
+
+
+def _run(cfg: DictConfig):
     # Torch optimization settings
     torch.set_float32_matmul_precision("high")  # Use TF32 when supported
     # Retrieve multiple processes context to setup DDP
@@ -233,7 +238,7 @@ def main(cfg: DictConfig):
     rank = int(os.environ.get("RANK", 0))
     local_rank = int(os.environ.get("LOCAL_RANK", 0))
     is_distributed = (
-        cfg.distribution.distribution_type.upper() != "LOCAL" and world_size > 1
+            cfg.distribution.distribution_type.upper() != "LOCAL" and world_size > 1
     )
 
     # Since configure_experiment uses distributed logic, distribution must be set up first
@@ -256,8 +261,8 @@ def main(cfg: DictConfig):
     config_for_wandb["world_size"] = world_size
     # Global batch size is microbatch size * number of GPUs * gradient accumulation steps
     config_for_wandb["global_batch_size"] = (
-        cfg.data.module_parameters.batch_size * world_size
-    ) * cfg.trainer.grad_acc_steps
+                                                    cfg.data.module_parameters.batch_size * world_size
+                                            ) * cfg.trainer.grad_acc_steps
     if rank == 0 and cfg.logger.wandb:
         wandb_kwargs = {
             "project": cfg.logger.wandb_project_name,
@@ -283,37 +288,58 @@ def main(cfg: DictConfig):
         wandb.finish()
 
 
+def main_with_overrides(overrides: list[str] | None = None) -> None:
+    if overrides is None:
+        overrides = []
+
+    if GlobalHydra.instance().is_initialized():
+        GlobalHydra.instance().clear()
+
+    with initialize_config_dir(version_base=None, config_dir=CONFIG_DIR):
+        cfg = compose(config_name=CONFIG_NAME, overrides=overrides)
+    _run(cfg)
+
+
 if __name__ == "__main__":
-    # Let's overwrite the config here
-    # server = local
-    # distribution = local \
-    # data = TRL_2D \
-    # model = isotropic_model_small \
-    # data.well_base_path =./ datasets \
-    # trainer.max_epoch = 200 \
-    # trainer.video_validation = False \
-    # trainer.image_validation = False \
-    # data.module_parameters.max_samples = 200 \
-    # auto_resume = False \
-    # logger = wandb \
-    # logger.wandb_project_name = patch - modulator - training \
-    # logger.wandb_entity = MeshTusk
+    # main()
+    # from controllable_patching_striding.train_dev import main_with_overrides
 
-    default_overrides = [
-        "server=local",
-        "distribution=local",
-        "data=TRL_2D",
-        "model=isotropic_model_small",
-        "data.well_base_path=../datasets",
-        "trainer.max_epoch=200",
-        "trainer.video_validation=False",
-        "trainer.image_validation=False",
-        "data.module_parameters.max_samples=200",
-        "auto_resume=False",
-        "logger.wandb=False",
-    ]
-    existing_args = set(sys.argv[1:])
-    if not any(a.startswith("server=") for a in existing_args):
-        sys.argv.extend([a for a in default_overrides if a not in existing_args])
-
-    main()
+    main_with_overrides([
+    "server=local",
+    "distribution=local",
+    "data=TRL_2D",
+    "data.well_base_path=../datasets",
+    "trainer.max_epoch=601",
+    "trainer.max_rollout_steps=10",
+    "trainer.prediction_type=delta",
+    "trainer.video_validation=False",
+    "trainer.image_validation=False",
+    "data.module_parameters.batch_size=2",
+    "data.module_parameters.max_samples=100",
+    "data_workers=4",
+    "optimizer.lr=0.0001",
+    "model.hidden_dim=192",
+    "model.groups=12",
+    "model.processor_blocks=12",
+    "model.drop_path=0.1",
+    "model/processor/space_mixing=full_spatial_attention",
+    "model.processor.space_mixing.num_heads=3",
+    "model.processor.time_mixing.num_heads=3",
+    "model.causal_in_time=True",
+    "model.jitter_patches=False",
+    "model/encoder=vstride_encoder",
+    "model.encoder.learned_pad=True",
+    "model.encoder.variable_deterministic_ds=False",
+    "model.encoder.base_kernel_size2d=[[4,4],[4,4]]",
+    "model.encoder.kernel_scales_seq=[[4,4]]",
+    "model/decoder=vstride_decoder",
+    "model.decoder.learned_pad=True",
+    "model.decoder.base_kernel_size2d=[[4,4],[4,4]]",
+    "model.infer=[4,4]",
+    "model.twod_only=True",
+    "model.threed_only=False",
+    "logger=wandb",
+    "logger.wandb_project_name=patch-modulator-training",
+    "logger.wandb_entity=MeshTusk",
+    "auto_resume=False",
+    ])
