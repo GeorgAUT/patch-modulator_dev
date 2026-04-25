@@ -318,13 +318,13 @@ if __name__ == "__main__":
     "data.module_parameters.max_samples=100",
     "data_workers=4",
     "optimizer.lr=0.0001",
-    "model.hidden_dim=192",
+    "model.hidden_dim=192", # 192
     "model.groups=12",
     "model.processor_blocks=12",
     "model.drop_path=0.1",
     "model/processor/space_mixing=full_spatial_attention",
-    "model.processor.space_mixing.num_heads=3",
-    "model.processor.time_mixing.num_heads=3",
+    "model.processor.space_mixing.num_heads=3", #3
+    "model.processor.time_mixing.num_heads=3", #3
     "model.causal_in_time=True",
     "model.jitter_patches=False",
     "model/encoder=vstride_encoder",
